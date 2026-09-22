@@ -19,7 +19,7 @@ cp .env.example .env    # TYPESAFE_API_KEY, plus HEYREACH_API_KEY for the hr com
 python -m reply_radar demo
 ```
 
-Python 3.9+. Outputs go to `data/` (git-ignored).
+Python 3.9+. Outputs go to `data/` (git-ignored). The demo scores its example signals as of 2026-09-22 (`as_of` in `reply_radar/demo/config.json`), so its numbers stay the same whenever you run it.
 
 ## What Jev judges
 
@@ -60,7 +60,7 @@ python -m reply_radar hr start --config my.json [--messages variants.txt] [--enr
 - **Campaign mode** (30+ past conversations): scores every past first touch, learns what earned replies in this account (`model.json`, `history.json`), then ranks the leads waiting in live and draft campaigns and picks a variant per lead.
 - **Cold start** (no history, a LinkedIn sender and/or lead lists): pulls the sender's 1st-degree network (`--enrich` fills thin profiles via `GetLead`) and every lead list, ranks them against the ICP, and checks draft messages.
 
-Single steps: `hr check | campaigns | lists | accounts`, `hr calibrate`, `hr score --campaign-id N | --list-id N`, `hr network`.
+Single steps: `hr check | campaigns | lists | accounts`, `hr calibrate`, `hr score --campaign-id N | --list-id N`, `hr network`. `hr calibrate` needs at least 5 past conversations that got a reply and 5 that didn't; with fewer it says so and exits.
 
 `--messages` takes variants separated by a line containing `---`; HeyReach merge tags (`{FIRST_NAME}`, `{COMPANY}`, custom fields like `{SIGNAL_HOOK}`) are filled per lead, and a variant with an unfilled tag is never picked. Signals come from a lead custom field named `signal` (plus `signal_date`); company size from `employee_count` is checked in code against `icp.employee_range`.
 
@@ -72,7 +72,7 @@ python -m reply_radar hr setup --from RUN/raw.json --messages variants.txt
 python -m reply_radar hr setup --campaigns-from RUN/setup.json   # once a sender is connected
 ```
 
-`hr_setup.py` is the only code that writes, through its own allowlist: create a lead list, add leads to a list, create a campaign. For every (tier, chosen variant) pair it makes a list, with the verdict as custom fields (`rr_tier`, `rr_lead_score`, `rr_reply_p`, `rr_best_variant`, `rr_why`), and a single-message campaign, so each lead gets the variant Jev chose. HeyReach creates campaigns in DRAFT and requires a connected LinkedIn sender; nothing here can start a campaign or send a message.
+`hr_setup.py` is the only code that writes, through its own allowlist: create a lead list, add leads to a list, create a campaign. For every (tier, chosen variant) pair it makes a list, with the verdict as custom fields (`rr_tier`, `rr_lead_score`, `rr_reply_p`, `rr_best_variant`, `rr_why`), and a single-message campaign, so each lead gets the variant Jev chose. The campaign is a connection request with no note, then that message 3 hours after the accept. Leads from a sender's 1st-degree network (`hr network`, cold start) get their own list and a campaign that starts with the message, with no connection request. HeyReach creates campaigns in DRAFT and requires a connected LinkedIn sender; nothing here can start a campaign or send a message.
 
 ## The giveaway: run it on someone else's HeyReach
 
