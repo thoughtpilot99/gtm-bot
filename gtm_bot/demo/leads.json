@@ -2,9 +2,9 @@
   {
     "id": "demo-01",
     "name": "Priya Raman",
-    "headline": "VP Sales at Ledgerline | Building a 25-person outbound team",
+    "headline": "VP Sales at Quillcount | Building a 25-person outbound team",
     "position": "VP Sales",
-    "company": "Ledgerline (B2B accounting automation software, 120 employees)",
+    "company": "Quillcount (B2B accounting automation software, 120 employees)",
     "signal": {
       "text": "Priya wrote a LinkedIn post: 'Our SDRs booked 40% fewer meetings this quarter on the same activity volume. Cold lists are dead. How are you all deciding which accounts to work?'",
       "date": "2026-09-20"
@@ -18,23 +18,23 @@
   {
     "id": "demo-02",
     "name": "Marcus Dale",
-    "headline": "Head of Sales Development @ Crateflow",
+    "headline": "Head of Sales Development @ Dockwren",
     "position": "Head of Sales Development",
-    "company": "Crateflow (logistics software for mid-market shippers, 60 employees)",
+    "company": "Dockwren (logistics software for mid-market shippers, 60 employees)",
     "signal": {
-      "text": "Marcus commented on a SignalHound (a competing buying-signal tool) post about intent data: 'Curious how this compares to just watching job changes.'",
+      "text": "Marcus commented on a Scoutrill (a competing buying-signal tool) post about intent data: 'Curious how this compares to just watching job changes.'",
       "date": "2026-09-17"
     },
     "messages": [
-      "Hi Marcus, I hope this message finds you well! I'm the founder of Pipewell, the leading AI-powered signal platform that helps sales teams 3x their pipeline. We work with companies just like Crateflow. Do you have 15 minutes next Tuesday or Wednesday for a quick demo? https://cal.com/pipewell/demo"
+      "Hi Marcus, I hope this message finds you well! I'm the founder of Pipewell, the leading AI-powered signal platform that helps sales teams 3x their pipeline. We work with companies just like Dockwren. Do you have 15 minutes next Tuesday or Wednesday for a quick demo? https://cal.com/pipewell/demo"
     ]
   },
   {
     "id": "demo-03",
     "name": "Elena Voss",
-    "headline": "Founder @ Voss Growth Partners | We book 30+ meetings/month for B2B SaaS via LinkedIn outbound",
+    "headline": "Founder @ Brisklane Outbound | We book 30+ meetings/month for B2B SaaS via LinkedIn outbound",
     "position": "Founder & CEO",
-    "company": "Voss Growth Partners (outbound lead generation agency, 15 employees)",
+    "company": "Brisklane Outbound (outbound lead generation agency, 15 employees)",
     "signal": {
       "text": "Elena liked a post about signal-based outbound.",
       "date": "2026-09-15"
@@ -46,9 +46,9 @@
   {
     "id": "demo-04",
     "name": "Tom Becker",
-    "headline": "Senior Software Engineer at Ledgerline | Rust, Postgres, distributed systems",
+    "headline": "Senior Software Engineer at Quillcount | Rust, Postgres, distributed systems",
     "position": "Senior Software Engineer",
-    "company": "Ledgerline (B2B accounting automation software, 120 employees)",
+    "company": "Quillcount (B2B accounting automation software, 120 employees)",
     "signal": {
       "text": "Tom liked a post comparing sales engagement tools.",
       "date": "2026-09-18"
@@ -60,15 +60,15 @@
   {
     "id": "demo-05",
     "name": "Aisha Mensah",
-    "headline": "Revenue Operations Manager | Brightdesk",
+    "headline": "Revenue Operations Manager | Helpquay",
     "position": "Revenue Operations Manager",
-    "company": "Brightdesk (customer support software, 200 employees)",
+    "company": "Helpquay (customer support software, 200 employees)",
     "signal": {
-      "text": "Brightdesk posted 6 new SDR job openings on LinkedIn this month.",
+      "text": "Helpquay posted 6 new SDR job openings on LinkedIn this month.",
       "date": "2026-09-12"
     },
     "messages": [
-      "Hi Aisha, noticed Brightdesk is hiring 6 SDRs, congrats on the growth! Pipewell helps RevOps teams route in-market accounts to new reps so they ramp faster. Would you be open to a quick chat?"
+      "Hi Aisha, noticed Helpquay is hiring 6 SDRs, congrats on the growth! Pipewell helps RevOps teams route in-market accounts to new reps so they ramp faster. Would you be open to a quick chat?"
     ]
   },
   {
@@ -102,9 +102,9 @@
   {
     "id": "demo-08",
     "name": "Hannah Lee",
-    "headline": "Head of Growth at Stackmint | ex-HubSpot",
+    "headline": "Head of Growth at Spendlark | ex-HubSpot",
     "position": "Head of Growth",
-    "company": "Stackmint (spend management software for startups, 80 employees)",
+    "company": "Spendlark (spend management software for startups, 80 employees)",
     "signal": {
       "text": "Hannah registered for the webinar 'Rebuilding outbound around buying signals'.",
       "date": "2026-08-23"
@@ -116,9 +116,9 @@
   {
     "id": "demo-09",
     "name": "Sam Whitaker",
-    "headline": "Account Executive at Ledgerline",
+    "headline": "Account Executive at Quillcount",
     "position": "Account Executive",
-    "company": "Ledgerline (B2B accounting automation software, 120 employees)",
+    "company": "Quillcount (B2B accounting automation software, 120 employees)",
     "signal": {
       "text": "Sam liked Priya Raman's post about SDR meetings dropping 40%.",
       "date": "2026-09-21"
@@ -130,9 +130,9 @@
   {
     "id": "demo-10",
     "name": "Grace Okafor",
-    "headline": "Co-founder & CEO at Tallyflow | Founder-led sales, for now",
+    "headline": "Co-founder & CEO at Binwren | Founder-led sales, for now",
     "position": "Co-founder & CEO",
-    "company": "Tallyflow (inventory software for B2B wholesalers, 35 employees)",
+    "company": "Binwren (inventory software for B2B wholesalers, 35 employees)",
     "signal": {
       "text": "Grace posted: 'Doing founder-led sales and spending 3 hours a day on LinkedIn prospecting. There has to be a better way to know who's actually ready to talk.'",
       "date": "2026-09-21"
@@ -148,7 +148,7 @@
     "position": "Director of Sales",
     "company": "Fernpoint (HR software for mid-size companies, 300 employees)",
     "signal": {
-      "text": "Victor followed SignalHound's company page (a competing buying-signal tool).",
+      "text": "Victor followed Scoutrill's company page (a competing buying-signal tool).",
       "date": "2026-08-01"
     },
     "messages": [
@@ -158,11 +158,11 @@
   {
     "id": "demo-12",
     "name": "Nina Petrova",
-    "headline": "Marketing Coordinator at Brightdesk",
+    "headline": "Marketing Coordinator at Helpquay",
     "position": "Marketing Coordinator",
-    "company": "Brightdesk (customer support software, 200 employees)",
+    "company": "Helpquay (customer support software, 200 employees)",
     "messages": [
-      "Hi Nina, hope you're having a great week! I wanted to reach out because we help companies like Brightdesk grow pipeline. Let me know if you'd be interested in learning more."
+      "Hi Nina, hope you're having a great week! I wanted to reach out because we help companies like Helpquay grow pipeline. Let me know if you'd be interested in learning more."
     ]
   }
 ]
