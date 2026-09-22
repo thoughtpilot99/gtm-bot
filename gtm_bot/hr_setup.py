@@ -1,4 +1,4 @@
-"""Turn a Reply Radar run into HeyReach lead lists and DRAFT campaigns. Never starts or sends.
+"""Turn a GTM Bot run into HeyReach lead lists and DRAFT campaigns. Never starts or sends.
 
 Kept apart from heyreach.py on purpose: the scoring client stays read-only.
 This client adds exactly three writes: create a lead list, add leads to a list,
@@ -58,16 +58,16 @@ class HeyReachSetup(HeyReach):
 # ---- building payloads from a scored run -----------------------------------------
 
 def lead_payload(result, scored_at=None):
-    """HeyReach lead payload with the Reply Radar verdict carried as custom fields."""
+    """HeyReach lead payload with the GTM Bot verdict carried as custom fields."""
     lead, ls = result["lead"], result["lead_score"]
     first, _, last = (lead.get("name") or "").partition(" ")
     fields = {
-        "rr_tier": ls["tier"],
-        "rr_lead_score": f"{ls['score']:.0f}",
-        "rr_reply_p": f"{result['reply_p']:.3f}" if result.get("reply_p") is not None else "",
-        "rr_best_variant": result.get("best") or "",
-        "rr_why": " · ".join(ls["why"] + ls["flags"]),
-        "rr_scored_at": scored_at,
+        "gtm_tier": ls["tier"],
+        "gtm_lead_score": f"{ls['score']:.0f}",
+        "gtm_reply_p": f"{result['reply_p']:.3f}" if result.get("reply_p") is not None else "",
+        "gtm_best_variant": result.get("best") or "",
+        "gtm_why": " · ".join(ls["why"] + ls["flags"]),
+        "gtm_scored_at": scored_at,
         "signal": (lead.get("signal") or {}).get("text"),
         "signal_date": (lead.get("signal") or {}).get("date"),
         "company_description": lead.get("company_description"),

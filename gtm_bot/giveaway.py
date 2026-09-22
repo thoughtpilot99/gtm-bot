@@ -1,8 +1,8 @@
-"""Reply Radar giveaway: Jev lead scoring run on someone's HeyReach, sorted back into it.
+"""GTM Bot giveaway: Jev lead scoring run on someone's HeyReach, sorted back into it.
 
-  python -m reply_radar.giveaway new HANDLE       intake template, filled from their DM
-  python -m reply_radar.giveaway run HANDLE [--dry-run]
-  python -m reply_radar.giveaway status
+  python -m gtm_bot.giveaway new HANDLE       intake template, filled from their DM
+  python -m gtm_bot.giveaway run HANDLE [--dry-run]
+  python -m gtm_bot.giveaway status
 
 What `run` does in their workspace:
   1. Reads it. With 30+ past conversations it first learns what earns replies there.
@@ -35,8 +35,8 @@ from .report import write
 from .scoring import evaluate
 
 ROOT = Path(__file__).resolve().parents[1]
-FOLDER = ROOT / "data" / "reply_radar" / "giveaway"
-OURS = ("[RR]", "[TEST] Reply Radar")  # lists we created: never re-scored
+FOLDER = ROOT / "data" / "gtm_bot" / "giveaway"
+OURS = ("[GTM]", "[TEST] GTM Bot")  # lists we created: never re-scored
 PUSH_TIERS = ("A", "B")
 
 
@@ -79,7 +79,7 @@ def cmd_new(a):
         "max_leads": 500,
         "status": "intake",
     }, indent=2), encoding="utf-8")
-    print(f"fill {path} from their DM, then: python -m reply_radar.giveaway run {_handle(a.handle)} --dry-run")
+    print(f"fill {path} from their DM, then: python -m gtm_bot.giveaway run {_handle(a.handle)} --dry-run")
 
 
 def cmd_status(a):
@@ -158,7 +158,7 @@ def cmd_run(a):
         all_results += results
         tiers = {t: sum(r["lead_score"]["tier"] == t for r in results) for t in ("A", "B", "C", "Skip")}
         print(f"\n{label}: {len(leads)} leads x {len(templates) or 'no'} variant(s) -> {tiers}")
-        rec = run_setup(hr, results, templates, f"[RR] {label[:22]}",
+        rec = run_setup(hr, results, templates, f"[GTM] {label[:22]}",
                         d / (re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-") or "source"),
                         PUSH_TIERS, dry_run=a.dry_run, scored_at=scored_at)
         if rec:
@@ -171,7 +171,7 @@ def cmd_run(a):
     all_results.sort(key=lambda r: (r["lead_score"]["tier"] != "Skip",
                                     r["reply_p"] if r["reply_p"] is not None else r["lead_score"]["score"] / 100),
                      reverse=True)
-    report = write(all_results, meta, cfg, d, f"Reply Radar · @{intake['handle']}")
+    report = write(all_results, meta, cfg, d, f"GTM Bot · @{intake['handle']}")
     (d / "deliver.md").write_text(deliver_text(all_results, created, insights), encoding="utf-8")
 
     tiers = {t: sum(r["lead_score"]["tier"] == t for r in all_results) for t in ("A", "B", "C", "Skip")}
@@ -189,21 +189,21 @@ def deliver_text(results, created, insights):
     pending = sum(len(c["pending_campaigns"]) for c in created)
     top = [r for r in results if r["lead_score"]["tier"] == "A"][:5]
     lines = [
-        "Your Reply Radar is in your HeyReach.",
+        "Your GTM Bot is in your HeyReach.",
         "",
         f"Jev scored {len(results)} leads against your ICP: {tiers['A']} tier A, {tiers['B']} tier B, "
         f"{tiers['C']} tier C, {tiers['Skip']} skipped (agencies, recruiters, job seekers, excluded).",
         "",
     ]
     if drafts:
-        lines.append(f"I added {lists} lists and {drafts} draft campaigns, each named [RR]. Every lead is routed to the "
+        lines.append(f"I added {lists} lists and {drafts} draft campaigns, each named [GTM]. Every lead is routed to the "
                      f"message variant Jev picked for them. Nothing is started: open the tier A drafts and start them.")
         replaced = [c["source"] for c in created if c.get("from_draft") and c["campaigns"]]
         if replaced:
-            lines.append(f"Your draft {', '.join(repr(r) for r in replaced)} is untouched. Start the [RR] drafts "
+            lines.append(f"Your draft {', '.join(repr(r) for r in replaced)} is untouched. Start the [GTM] drafts "
                          f"instead of it so nobody gets two messages.")
     elif lists:
-        lines.append(f"I added {lists} lists named [RR], one per tier and message. "
+        lines.append(f"I added {lists} lists named [GTM], one per tier and message. "
                      + (f"Connect a LinkedIn sender and I can turn them into {pending} draft campaigns."
                         if pending else "Attach them to a campaign when you're ready."))
     if top:

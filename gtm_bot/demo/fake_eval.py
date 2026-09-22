@@ -1,6 +1,6 @@
-"""End-to-end test of Reply Radar against synthetic HeyReach workspaces.
+"""End-to-end test of GTM Bot against synthetic HeyReach workspaces.
 
-  python -m reply_radar.demo.fake_eval [--history 400] [--fresh 60] [--network 150] [--list 40]
+  python -m gtm_bot.demo.fake_eval [--history 400] [--fresh 60] [--network 150] [--list 40]
 
 Builds two fake workspaces, serves them from a local fake HeyReach, runs the
 real CLI (`hr start`) against each, then grades the output against the hidden
@@ -33,8 +33,8 @@ HERE = Path(__file__).resolve().parent
 
 def run_cli(args, key, base_url, log):
     env = {**os.environ, "HEYREACH_API_KEY": key, "HEYREACH_BASE_URL": base_url, "PYTHONWARNINGS": "ignore"}
-    cmd = [sys.executable, "-m", "reply_radar", *args]
-    print("$ " + " ".join(["python", "-m", "reply_radar", *args]), flush=True)
+    cmd = [sys.executable, "-m", "gtm_bot", *args]
+    print("$ " + " ".join(["python", "-m", "gtm_bot", *args]), flush=True)
     p = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, text=True)
     log.write_text(p.stdout + p.stderr, encoding="utf-8")
     if p.returncode:
@@ -66,7 +66,7 @@ def main():
     ap.add_argument("--network", type=int, default=150)
     ap.add_argument("--list", type=int, default=40)
     ap.add_argument("--seed", type=int, default=7)
-    ap.add_argument("--out", default=str(ROOT / "data" / "reply_radar" / "fake"))
+    ap.add_argument("--out", default=str(ROOT / "data" / "gtm_bot" / "fake"))
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)

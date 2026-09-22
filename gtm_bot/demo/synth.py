@@ -1,4 +1,4 @@
-"""Synthetic HeyReach workspaces for testing Reply Radar without real campaigns.
+"""Synthetic HeyReach workspaces for testing GTM Bot without real campaigns.
 
 Two workspaces, in HeyReach API shapes:
   campaigns  - 2 senders, 4 finished campaigns with an inbox of past conversations
@@ -9,7 +9,7 @@ Two workspaces, in HeyReach API shapes:
 Every lead and message is built from known attributes (role fit, seniority,
 company type and size, signal type/age, what the message does). A hidden reply
 model turns those into a true reply probability, so the test can check how
-well Jev reads the text, and how well Reply Radar predicts replies, against a
+well Jev reads the text, and how well GTM Bot predicts replies, against a
 known answer. The reply model encodes common outbound wisdom; it is an
 assumption about the world, not measured LinkedIn data.
 """
@@ -192,7 +192,7 @@ class World:
     def person(self, fit_weights=(20, 20, 20, 40), disq_rate=0.08, p_fit_company=0.7):
         first, last = self.name()
         self.n += 1
-        url = f"https://www.linkedin.com/in/replyradar-test-{first.lower()}-{last.lower()}-{self.n:04d}"  # never a real person
+        url = f"https://www.linkedin.com/in/gtmbot-test-{first.lower()}-{last.lower()}-{self.n:04d}"  # never a real person
         roll = self.r.random()
         if roll < disq_rate:
             kind = self.r.choice(["agency", "recruiter", "open_to_work"])
