@@ -85,12 +85,12 @@ def lead_payload(result, scored_at=None):
 
 
 def draft_sequence(templates, fallback):
-    """Connection request without a note, then the first message (A/B variants), then stop."""
+    """Connection request without a note, then the first message 3 hours after the accept, then stop."""
     return {
         "nodeType": "CONNECTION_REQUEST", "actionDelay": 0, "actionDelayUnit": "DAY",
         "payload": {"messages": [], "fallbackMessage": None, "toBeWithdrawnAfterDays": 21},
         "conditionalNode": {
-            "nodeType": "MESSAGE", "actionDelay": 1, "actionDelayUnit": "DAY",
+            "nodeType": "MESSAGE", "actionDelay": 3, "actionDelayUnit": "HOUR",
             "payload": {"messages": templates, "fallbackMessage": fallback},
             "unconditionalNode": {"nodeType": "END", "actionDelay": 3, "actionDelayUnit": "HOUR"},
         },
@@ -98,24 +98,43 @@ def draft_sequence(templates, fallback):
     }
 
 
+def message_sequence(templates, fallback):
+    """For 1st-degree connections: no connection request, the message goes out first, then stop."""
+    return {
+        "nodeType": "MESSAGE", "actionDelay": 0, "actionDelayUnit": "HOUR",
+        "payload": {"messages": templates, "fallbackMessage": fallback},
+        "unconditionalNode": {"nodeType": "END", "actionDelay": 3, "actionDelayUnit": "HOUR"},
+    }
+
+
+def is_connection(result):
+    """Leads pulled from a sender's 1st-degree network are already connected: never send them a request."""
+    return (result["lead"].get("source") or "") == "network"
+
+
 def routing_plan(results, templates, tiers=("A", "B")):
-    """Group leads by (tier, the variant Jev picked for them).
+    """Group leads by (tier, the variant Jev picked for them, already connected or not).
 
     A HeyReach campaign splits its A/B variants across all its leads, so to send
     each lead the variant Jev chose, every (tier, variant) pair gets its own list
-    and a single-message campaign.
+    and a single-message campaign. 1st-degree connections get their own group, so
+    their campaign starts with the message instead of a connection request.
     """
     labels = [f"Variant {chr(65 + i)}" if len(templates) > 1 else "Message" for i in range(len(templates))]
     groups = {}
     for r in results:
         tier = r["lead_score"]["tier"]
         if tier in tiers:
-            groups.setdefault((tier, r.get("best")), []).append(r)
+            groups.setdefault((tier, r.get("best"), is_connection(r)), []).append(r)
     plan = []
-    for (tier, label), rows in sorted(groups.items(), key=lambda kv: (kv[0][0], kv[0][1] or "")):
+    for (tier, label, connected), rows in sorted(groups.items(), key=lambda kv: (kv[0][0], kv[0][1] or "", kv[0][2])):
         template = templates[labels.index(label)] if label in labels else None
-        plan.append({"tier": tier, "variant": label, "template": template, "results": rows})
+        plan.append({"tier": tier, "variant": label, "connected": connected, "template": template, "results": rows})
     return plan
+
+
+def _group_name(prefix, g):
+    return f"{prefix} · {g['tier']} · {g['variant'] or 'no message'}" + (" · 1st-degree" if g["connected"] else "")
 
 
 def _fallback(templates):
@@ -127,23 +146,25 @@ def run_setup(hr, results, templates, prefix, out_dir, tiers=("A", "B"), dry_run
     plan = routing_plan(results, templates, tiers)
     if dry_run:
         for g in plan:
-            print(f"[dry run] {prefix} · {g['tier']} · {g['variant']}: {len(g['results'])} leads")
+            first = "message first" if g["connected"] else "connection request, then the message 3 hours after the accept"
+            print(f"[dry run] {_group_name(prefix, g)}: {len(g['results'])} leads ({first})")
         print("[dry run] first lead payload:", json.dumps(lead_payload(plan[0]["results"][0], scored_at), indent=1)[:1500])
         return None
     accounts = [a["id"] for a in hr.accounts() if a.get("isActive", True) and a.get("authIsValid", True)]
     record = {"prefix": prefix, "lists": [], "campaigns": [], "pending_campaigns": []}
     fallback = _fallback(templates)
     for g in plan:
-        name = f"{prefix} · {g['tier']} · {g['variant'] or 'no message'}"
+        name = _group_name(prefix, g)
         list_id = (hr.create_list(name) or {}).get("id")
         counts = hr.add_leads(list_id, [lead_payload(r, scored_at) for r in g["results"]])
-        record["lists"].append({"tier": g["tier"], "variant": g["variant"], "id": list_id, "name": name,
-                                "leads": len(g["results"]), **counts})
+        record["lists"].append({"tier": g["tier"], "variant": g["variant"], "connected": g["connected"], "id": list_id,
+                                "name": name, "leads": len(g["results"]), **counts})
         print(f"list '{name}' (id {list_id}): {counts}")
         if not g["template"]:
             continue
-        campaign = {"tier": g["tier"], "variant": g["variant"], "name": name[:50], "list_id": list_id,
-                    "sequence": draft_sequence([g["template"]], fallback)}
+        sequence = (message_sequence if g["connected"] else draft_sequence)([g["template"]], fallback)
+        campaign = {"tier": g["tier"], "variant": g["variant"], "connected": g["connected"], "name": name[:50],
+                    "list_id": list_id, "sequence": sequence}
         if accounts:
             campaign["id"] = (hr.create_draft_campaign(campaign["name"], list_id, accounts, campaign["sequence"]) or {}).get("campaignId")
             record["campaigns"].append(campaign)

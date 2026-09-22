@@ -141,6 +141,8 @@ def load_csv(path):
 
 def cmd_demo(args):
     cfg, leads = _json(HERE / "demo" / "config.json"), _json(HERE / "demo" / "leads.json")
+    for lead in leads:  # score the example signals as of the day they were written for, so the output never drifts
+        lead.setdefault("as_of", cfg.get("as_of"))
     _run(cfg, leads, None, _out_dir(args, "demo"), "Reply Radar · demo")
 
 
@@ -274,7 +276,10 @@ def hr_calibrate(hr, args):
     cfg = _json(args.config)
     ids = [c for c in (args.campaign_ids or "").split(",") if c]
     path = Path(args.out) if args.out else OUT / "model.json"
-    model, insights = calibrate_from_inbox(hr, cfg, ids, args.max, args.signal_field, out_dir=path.parent)
+    try:
+        model, insights = calibrate_from_inbox(hr, cfg, ids, args.max, args.signal_field, out_dir=path.parent)
+    except ValueError as e:
+        sys.exit(f"not enough reply history to learn from yet ({e}). Keep sending and run it again.")
     print_model(model, insights)
     save_model(model, insights, path, ids)
 
