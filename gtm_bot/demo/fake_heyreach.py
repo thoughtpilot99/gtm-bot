@@ -153,7 +153,7 @@ class FakeHeyReach:
 
 
 if __name__ == "__main__":
-    # Serve a fixture for manual CLI runs:  python -m reply_radar.demo.fake_heyreach [fixture.json]
+    # Serve a fixture for manual CLI runs:  python -m gtm_bot.demo.fake_heyreach [fixture.json]
     import sys
     import time
 

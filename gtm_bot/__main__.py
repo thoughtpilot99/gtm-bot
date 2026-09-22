@@ -1,23 +1,23 @@
-"""Reply Radar: score LinkedIn leads and messages with Jev, sort them back into HeyReach. Never sends.
+"""GTM Bot: score LinkedIn leads and messages with Jev, sort them back into HeyReach. Never sends.
 
-  python -m reply_radar demo
-  python -m reply_radar score LEADS.json|LEADS.csv --config CONFIG.json [--model MODEL.json]
+  python -m gtm_bot demo
+  python -m gtm_bot score LEADS.json|LEADS.csv --config CONFIG.json [--model MODEL.json]
 
-  python -m reply_radar hr start --config CONFIG.json [--messages FILE]
+  python -m gtm_bot hr start --config CONFIG.json [--messages FILE]
       Looks at the workspace and picks a mode:
         campaign mode   past conversations exist: learn reply patterns from the inbox,
                         then rank the leads waiting in live/draft campaigns and pick a variant per lead
         cold start      no history, but a LinkedIn sender is connected: score its network
                         (plus any lead lists) against the ICP and check draft messages
 
-  python -m reply_radar hr check | campaigns | lists | accounts
-  python -m reply_radar hr calibrate --config CONFIG.json [--campaign-ids 1,2] [--max 500]
-  python -m reply_radar hr score --config CONFIG.json --campaign-id N | --list-id N [--messages FILE] [--model M]
-  python -m reply_radar hr network --config CONFIG.json [--account-id N] [--messages FILE] [--enrich]
+  python -m gtm_bot hr check | campaigns | lists | accounts
+  python -m gtm_bot hr calibrate --config CONFIG.json [--campaign-ids 1,2] [--max 500]
+  python -m gtm_bot hr score --config CONFIG.json --campaign-id N | --list-id N [--messages FILE] [--model M]
+  python -m gtm_bot hr network --config CONFIG.json [--account-id N] [--messages FILE] [--enrich]
 
-  python -m reply_radar hr setup --from RUN/raw.json --messages TEMPLATES.txt [--prefix NAME] [--tiers A,B] [--dry-run]
-  python -m reply_radar hr setup --campaigns-from RUN/setup.json
-      The only command that writes: one lead list per tier (with the Reply Radar verdict as custom
+  python -m gtm_bot hr setup --from RUN/raw.json --messages TEMPLATES.txt [--prefix NAME] [--tiers A,B] [--dry-run]
+  python -m gtm_bot hr setup --campaigns-from RUN/setup.json
+      The only command that writes: one lead list per tier (with the GTM Bot verdict as custom
       fields) and one DRAFT campaign per tier. Campaigns are never started; nothing is sent.
 """
 
@@ -40,7 +40,7 @@ from .scoring import evaluate  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 HERE = Path(__file__).resolve().parent
-OUT = ROOT / "data" / "reply_radar"
+OUT = ROOT / "data" / "gtm_bot"
 LIVE_STATUSES = {"DRAFT", "IN_PROGRESS", "PAUSED", "SCHEDULED", "STARTING"}
 MIN_HISTORY = 30  # outbound conversations needed before campaign mode is worth calibrating
 
@@ -67,7 +67,7 @@ def _jev(cfg):
     return Jev(model=cfg.get("jev_model", "jev-latest"))
 
 
-def _run(cfg, leads, model, out_dir, title="Reply Radar", note=None, top=None):
+def _run(cfg, leads, model, out_dir, title="GTM Bot", note=None, top=None):
     results, meta = evaluate(cfg, leads, _jev(cfg), model=model)
     path = write(results, meta, cfg, out_dir, title, note)
     print(f"\n{'#':>3}  {'lead':<24} tier  lead  msg  reply")
@@ -143,7 +143,7 @@ def cmd_demo(args):
     cfg, leads = _json(HERE / "demo" / "config.json"), _json(HERE / "demo" / "leads.json")
     for lead in leads:  # score the example signals as of the day they were written for, so the output never drifts
         lead.setdefault("as_of", cfg.get("as_of"))
-    _run(cfg, leads, None, _out_dir(args, "demo"), "Reply Radar · demo")
+    _run(cfg, leads, None, _out_dir(args, "demo"), "GTM Bot · demo")
 
 
 def cmd_score(args):
@@ -377,7 +377,7 @@ def hr_start(hr, args):
 
     else:
         print("\nNothing to work with yet. Connect a LinkedIn sender or import a lead list in HeyReach, then re-run,\n"
-              "or score a lead export directly: python -m reply_radar score leads.csv --config CONFIG.json")
+              "or score a lead export directly: python -m gtm_bot score leads.csv --config CONFIG.json")
 
 
 def hr_setup(args):
@@ -396,7 +396,7 @@ def hr_setup(args):
 
 def main():
     load_env()
-    ap = argparse.ArgumentParser(prog="reply_radar", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(prog="gtm_bot", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("demo")
@@ -427,7 +427,7 @@ def main():
     p.add_argument("--signal-field", default="signal")
     p.add_argument("--from", dest="from_run", help="setup: raw.json of a scoring run")
     p.add_argument("--campaigns-from", help="setup: create the saved draft campaigns once a sender is connected")
-    p.add_argument("--prefix", default="[TEST] Reply Radar")
+    p.add_argument("--prefix", default="[TEST] GTM Bot")
     p.add_argument("--tiers", default="A,B")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--out")

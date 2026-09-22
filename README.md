@@ -1,4 +1,4 @@
-# Reply Radar
+# GTM Bot
 
 Signal-based LinkedIn outbound scoring with HeyReach + Jev (TypeSafe System One).
 Scores every lead, every message variant, and the probability of a reply, then
@@ -12,14 +12,14 @@ DRAFT campaign). Nothing here starts a campaign or sends a message.
 ## Setup
 
 ```bash
-git clone https://github.com/thoughtpilot99/reply-radar.git && cd reply-radar
+git clone https://github.com/thoughtpilot99/gtm-bot.git && cd gtm-bot
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env    # TYPESAFE_API_KEY, plus HEYREACH_API_KEY for the hr commands
-python -m reply_radar demo
+python -m gtm_bot demo
 ```
 
-Python 3.9+. Outputs go to `data/` (git-ignored). The demo scores its example signals as of 2026-09-22 (`as_of` in `reply_radar/demo/config.json`), so its numbers stay the same whenever you run it.
+Python 3.9+. Outputs go to `data/` (git-ignored). The demo scores its example signals as of 2026-09-22 (`as_of` in `gtm_bot/demo/config.json`), so signal ages don't drift with the calendar.
 
 ## What Jev judges
 
@@ -47,14 +47,14 @@ weights, thresholds) stays in code.
 ## Run
 
 ```bash
-python -m reply_radar demo
-python -m reply_radar score leads.csv --config my.json --messages variants.txt
+python -m gtm_bot demo
+python -m gtm_bot score leads.csv --config my.json --messages variants.txt
 ```
 
 With HeyReach (`HEYREACH_API_KEY` in `.env`), `hr start` looks at the workspace and picks a mode:
 
 ```bash
-python -m reply_radar hr start --config my.json [--messages variants.txt] [--enrich]
+python -m gtm_bot hr start --config my.json [--messages variants.txt] [--enrich]
 ```
 
 - **Campaign mode** (30+ past conversations): scores every past first touch, learns what earned replies in this account (`model.json`, `history.json`), then ranks the leads waiting in live and draft campaigns and picks a variant per lead.
@@ -67,32 +67,32 @@ Single steps: `hr check | campaigns | lists | accounts`, `hr calibrate`, `hr sco
 ### Writing back to HeyReach (drafts only)
 
 ```bash
-python -m reply_radar hr setup --from RUN/raw.json --messages variants.txt --dry-run
-python -m reply_radar hr setup --from RUN/raw.json --messages variants.txt
-python -m reply_radar hr setup --campaigns-from RUN/setup.json   # once a sender is connected
+python -m gtm_bot hr setup --from RUN/raw.json --messages variants.txt --dry-run
+python -m gtm_bot hr setup --from RUN/raw.json --messages variants.txt
+python -m gtm_bot hr setup --campaigns-from RUN/setup.json   # once a sender is connected
 ```
 
-`hr_setup.py` is the only code that writes, through its own allowlist: create a lead list, add leads to a list, create a campaign. For every (tier, chosen variant) pair it makes a list, with the verdict as custom fields (`rr_tier`, `rr_lead_score`, `rr_reply_p`, `rr_best_variant`, `rr_why`), and a single-message campaign, so each lead gets the variant Jev chose. The campaign is a connection request with no note, then that message 3 hours after the accept. Leads from a sender's 1st-degree network (`hr network`, cold start) get their own list and a campaign that starts with the message, with no connection request. HeyReach creates campaigns in DRAFT and requires a connected LinkedIn sender; nothing here can start a campaign or send a message.
+`hr_setup.py` is the only code that writes, through its own allowlist: create a lead list, add leads to a list, create a campaign. For every (tier, chosen variant) pair it makes a list, with the verdict as custom fields (`gtm_tier`, `gtm_lead_score`, `gtm_reply_p`, `gtm_best_variant`, `gtm_why`), and a single-message campaign, so each lead gets the variant Jev chose. The campaign is a connection request with no note, then that message 3 hours after the accept. Leads from a sender's 1st-degree network (`hr network`, cold start) get their own list and a campaign that starts with the message, with no connection request. HeyReach creates campaigns in DRAFT and requires a connected LinkedIn sender; nothing here can start a campaign or send a message.
 
 ## The giveaway: run it on someone else's HeyReach
 
 ```bash
-python -m reply_radar.giveaway new HANDLE             # intake.json, filled from their DM
-python -m reply_radar.giveaway run HANDLE --dry-run   # score only, nothing written
-python -m reply_radar.giveaway run HANDLE             # score + push [RR] lists and drafts
-python -m reply_radar.giveaway status
+python -m gtm_bot.giveaway new HANDLE             # intake.json, filled from their DM
+python -m gtm_bot.giveaway run HANDLE --dry-run   # score only, nothing written
+python -m gtm_bot.giveaway run HANDLE             # score + push [GTM] lists and drafts
+python -m gtm_bot.giveaway status
 ```
 
 Ask them for: what they sell and the problem it solves, target roles, company type and size, who to exclude, optionally their draft messages, and a HeyReach API key made for this (they delete it after). `run` asks for the key at a hidden prompt and keeps it in memory for that run only; it is never written to disk.
 
-`run` learns from their inbox when they have 30+ past conversations, scores the leads not yet being contacted (draft campaigns' lists, unused lists, and the network when asked or when there is nothing else), and pushes one `[RR]` list and one single-message DRAFT campaign per (tier, variant Jev picked) back into their HeyReach. Nothing is started. It writes `report.html` and `deliver.md` (the DM to send) to `data/reply_radar/giveaway/HANDLE/`.
+`run` learns from their inbox when they have 30+ past conversations, scores the leads not yet being contacted (draft campaigns' lists, unused lists, and the network when asked or when there is nothing else), and pushes one `[GTM]` list and one single-message DRAFT campaign per (tier, variant Jev picked) back into their HeyReach. Nothing is started. It writes `report.html` and `deliver.md` (the DM to send) to `data/gtm_bot/giveaway/HANDLE/`.
 
 ## Test without a real account
 
 ```bash
-python -m reply_radar.demo.fake_eval
+python -m gtm_bot.demo.fake_eval
 ```
 
-Builds two synthetic HeyReach workspaces (a team with 400 past conversations and a 60-lead draft campaign with 3 variants; a cold start with a 150-person network and an imported list), serves them from a local fake HeyReach, runs the real CLI against both, and grades every judgment and prediction against the hidden truth the fake world was built from. Writes `data/reply_radar/fake/test_report.html`.
+Builds two synthetic HeyReach workspaces (a team with 400 past conversations and a 60-lead draft campaign with 3 variants; a cold start with a 150-person network and an imported list), serves them from a local fake HeyReach, runs the real CLI against both, and grades every judgment and prediction against the hidden truth the fake world was built from. Writes `data/gtm_bot/fake/test_report.html`.
 
-Outputs land in `data/reply_radar/<run>/` as `report.html`, `scores.json` and `raw.json`.
+Outputs land in `data/gtm_bot/<run>/` as `report.html`, `scores.json` and `raw.json`.

@@ -55,7 +55,7 @@ def render(r):
     b = r["broken_sends"]
 
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reply Radar Test</title>
+<title>GTM Bot Test</title>
 <style>
 :root{{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--mute:#5d6470;--line:#e3e4e8;--accent:#2f5bea;--chip:#eef0f4;--good:#1f8a4c}}
 @media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2e37;--accent:#7c9cff;--chip:#232731;--good:#4ade80}}}}
@@ -69,7 +69,7 @@ th{{text-align:left;font-weight:600;color:var(--mute);font-size:12px;padding:8px
 tr:last-child td{{border-bottom:0}}.bar{{display:inline-block;width:120px;height:8px;background:var(--chip);border-radius:99px;overflow:hidden;vertical-align:middle}}
 .bar i{{display:block;height:100%;background:var(--accent)}}small{{color:var(--mute)}}.ok{{color:var(--good);font-weight:600}}
 </style></head><body><main>
-<h1>Reply Radar · fake workspace test</h1>
+<h1>GTM Bot · fake workspace test</h1>
 <p>Two synthetic HeyReach workspaces (a team with campaign history, and a cold start with only a network and a list) served by a local fake HeyReach. The real CLI ran against them; every number below is graded against the truth the fake world was built from. The reply model in that world encodes common outbound wisdom, so section 2 and 3 show how well the pipeline recovers a known pattern, not what real LinkedIn replies do.</p>
 <div class="stats">
 <div class="stat"><b>{j['requests']:,}</b><span>Jev requests</span></div>

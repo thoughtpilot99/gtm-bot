@@ -133,7 +133,7 @@ class HeyReach:
         })
 
 
-# ---- mapping HeyReach shapes to reply_radar leads ----------------------------
+# ---- mapping HeyReach shapes to gtm_bot leads ----------------------------
 
 def _custom_fields(profile):
     return {(f.get("name") or "").strip(): f.get("value") for f in (profile.get("customFields") or []) if f.get("name")}
@@ -151,7 +151,7 @@ def _employees(v):
 
 
 def to_lead(profile, signal_field="signal", signal_date_field="signal_date"):
-    """Normalize a HeyReach lead/correspondent/network profile into a reply_radar lead."""
+    """Normalize a HeyReach lead/correspondent/network profile into a gtm_bot lead."""
     p = profile.get("linkedInUserProfile") or profile
     cf = _custom_fields(p)
     cf_lower = {k.lower(): v for k, v in cf.items()}

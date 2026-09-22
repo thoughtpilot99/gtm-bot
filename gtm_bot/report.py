@@ -45,7 +45,7 @@ def _variant(v, best):
     </div>"""
 
 
-def render(results, meta, cfg, title="Reply Radar", note=None):
+def render(results, meta, cfg, title="GTM Bot", note=None):
     rows = []
     for rank, r in enumerate(results, 1):
         lead, ls = r["lead"], r["lead_score"]
@@ -136,7 +136,7 @@ table.j{{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}}tabl
 </main></body></html>"""
 
 
-def write(results, meta, cfg, out_dir, title="Reply Radar", note=None):
+def write(results, meta, cfg, out_dir, title="GTM Bot", note=None):
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "report.html").write_text(render(results, meta, cfg, title, note), encoding="utf-8")
     slim = [{"name": r["lead"].get("name"), "profile_url": r["lead"].get("profile_url"),
