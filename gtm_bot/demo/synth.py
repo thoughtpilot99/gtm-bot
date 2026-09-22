@@ -75,8 +75,8 @@ PROBLEM_POSTS = [
 OFF_POSTS = [("Excited to share that we just launched our new mobile app!", "your launch post"),
              ("Grateful for this amazing team offsite in Lisbon.", "your offsite post")]
 COMPETITOR = [
-    ("{first} commented on a post by SignalHound (a competing buying-signal tool) about intent data: '{c}'",
-     "your comment on SignalHound's intent data post"),
+    ("{first} commented on a post by Scoutrill (a competing buying-signal tool) about intent data: '{c}'",
+     "your comment on Scoutrill's intent data post"),
     ("{first} followed the company page of IntentPilot (a competing buying-signal tool).", "you following IntentPilot"),
     ("{first} liked a case study posted by Prospectly (a competing buying-signal tool).", "the Prospectly case study you liked"),
 ]
